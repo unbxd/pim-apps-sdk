@@ -11,8 +11,8 @@ os.environ['PIM_APP_BASE_URL'] = "https://pim-apps.unbxd.io/pim/"
 os.environ['PIM_BASE_URL'] = "https://pim.unbxd.io/"
 os.environ['PEPPERX_URL'] = "https://pim.unbxd.io/pepperx/"
 
-os.environ['QA_PIM_APP_BASE_URL'] = "http://pimqa-apps.unbxd.io/pim/"
-os.environ['QA_PIM_BASE_URL'] = "http://pimqa.unbxd.io/"
+os.environ['QA_PIM_APP_BASE_URL'] = "https://pimqa-apps.unbxd.io/pim/"
+os.environ['QA_PIM_BASE_URL'] = "https://pimqa.unbxd.io/"
 os.environ['QA_PEPPERX_URL'] = "https://pimqa.unbxd.io/pepperx/"
 
 os.environ['PIMDEV_APP_BASE_URL'] = "http://pimdev-apps.unbxd.io/pim/"
