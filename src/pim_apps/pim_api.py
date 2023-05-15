@@ -628,7 +628,8 @@ class ProductProcessor(object):
             data["failed_file_download_links"] = {
                 "CSV": failed_file
             }
-        elif status in ["PRODUCTS_FAILED","EXPORTED","FAILED"] and len(self.failed_processed_products)>0:
+        elif status in ["PRODUCTS_FAILED","EXPORTED","FAILED"] and len(self.failed_processed_products)>0 \
+        and "errors" in list(self.failed_processed_products[0].keys()):
             failed_file_url = self.write_failed_file(self.failed_processed_products)
             data["failed_file_download_links"] = {
                 "CSV": failed_file_url
