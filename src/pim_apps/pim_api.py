@@ -142,6 +142,7 @@ class PIMChannelAPI(object):
         }
         req = {
             "count": count,
+            "siteType" : "PIM",
             "groupByParent": self.group_by_parent,
             # "q": self.q
         }
