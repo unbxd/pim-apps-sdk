@@ -259,7 +259,7 @@ class ProductStatus(object):
 
     def get_task(self):
         try:
-            url = f"{get_pepperx_domain()}/pepperx/api/v1/autoPIM?task_id={self.task_id}"
+            url = f"{get_pepperx_domain()}/api/v1/autoPIM?task_id={self.task_id}"
             
             payload = {}
             headers = {
