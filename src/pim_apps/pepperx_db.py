@@ -259,7 +259,7 @@ class ProductStatus(object):
 
     def get_task(self):
         try:
-            url = f"{get_pepperx_domain()}/api/v1/autoPIM?task_id={self.task_id}"
+            url = f"{get_pepperx_domain()}api/v1/autoPIM?task_id={self.task_id}"
             
             payload = {}
             headers = {
@@ -274,6 +274,20 @@ class ProductStatus(object):
         except Exception as e:
             print(e)
             print_exc()
+    def post_task(self,data):
+        
+        url =  f"{get_pepperx_domain()}api/v1/autoPIM"
+        
+        payload = json.dumps(data)
+        headers = {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+        
+        response = requests.request("POST", url, headers=headers, data=payload)
+        
+        print(response.text)
+
     def post(self, data):
         try:
             url = f"{get_pepperx_domain()}api/v1/task/product/transaction"
