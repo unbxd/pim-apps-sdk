@@ -236,7 +236,25 @@ class ProductStatus(object):
     #     except Exception as e:
     #         print(e)
     #         print_exc()
+    def get(self, task_id="",product_id=""):
+        try:
 
+            
+            url = f"{get_pepperx_domain()}api/v1/product/transaction?task_id={task_id}&product_id={product_id}"
+            
+            payload = {}
+            headers = {
+              'accept': 'application/json'
+            }
+            
+            response = requests.request("GET", url, headers=headers, data=payload)
+            
+            print(response.text)
+
+            return response
+        except Exception as e:
+            print(e)
+            print_exc()
     def post(self, data):
         try:
             url = f"{get_pepperx_domain()}api/v1/task/product/transaction"
