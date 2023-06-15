@@ -236,7 +236,7 @@ class ProductStatus(object):
     #     except Exception as e:
     #         print(e)
     #         print_exc()
-    def get(self,product_id=""):
+    def get_product(self,product_id=""):
         try:
 
             
@@ -251,7 +251,26 @@ class ProductStatus(object):
             
             print(response.text)
 
-            return response
+            resp = json.loads(response.text)
+            return resp
+        except Exception as e:
+            print(e)
+            print_exc()
+
+    def get_task(self):
+        try:
+            url = f"{get_pepperx_domain()}/pepperx/api/v1/autoPIM?task_id={self.task_id}"
+            
+            payload = {}
+            headers = {
+              'accept': 'application/json'
+            }
+            
+            response = requests.request("GET", url, headers=headers, data=payload)
+            
+            print(response.text)
+            resp = json.loads(response.text)
+            return resp
         except Exception as e:
             print(e)
             print_exc()
