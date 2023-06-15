@@ -236,11 +236,11 @@ class ProductStatus(object):
     #     except Exception as e:
     #         print(e)
     #         print_exc()
-    def get(self, task_id="",product_id=""):
+    def get(self,product_id=""):
         try:
 
             
-            url = f"{get_pepperx_domain()}api/v1/product/transaction?task_id={task_id}&product_id={product_id}"
+            url = f"{get_pepperx_domain()}api/v1/product/transaction?task_id={self.task_id}&product_id={product_id}"
             
             payload = {}
             headers = {
