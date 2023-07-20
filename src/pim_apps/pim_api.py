@@ -16,7 +16,7 @@ from botocore.exceptions import ClientError
 class PIMChannelAPI(object):
     def __init__(
             self, api_key, reference_id=None, properties=[], group_by_parent=None, parent_id=None, q=None,
-            cache_count=20, slice_id=None, max_slice=None
+            cache_count=20, slice_id=None, max_slice=None, siteType="NETWORK"
     ):
         self.api_key = api_key
         self.properties = properties
@@ -33,6 +33,7 @@ class PIMChannelAPI(object):
         self.scroll_id = None
         self.products_total = 0
         self.is_products_split = self.is_products_post_split()
+        self.site_type = siteType
 
 
     def count(self):
@@ -145,6 +146,9 @@ class PIMChannelAPI(object):
             "groupByParent": self.group_by_parent,
             # "q": self.q
         }
+        if self.site_type == "PIM":
+            req["siteType"] = site_type
+
         if type == "SCROLL":
             req["type"] = "SCROLL"
             if scroll_id:
@@ -323,14 +327,15 @@ class PIMChannelAPI(object):
 
 class ProductProcessor(object):
 
-    def __init__(self, api_key, reference_id, task_id):
+    def __init__(self, api_key, reference_id, task_id, site_type="NETWORK"):
         self.api_key = api_key
         self.task_id = task_id
         self.reference_id = reference_id
         self.app_user_instance = AppUserPIM(self.api_key)
+        self.site_type = site_type
 
 
-        self.pim_channel_api = PIMChannelAPI(self.api_key, self.reference_id)
+        self.pim_channel_api = PIMChannelAPI(api_key=self.api_key,reference_id=self.reference_id, siteType=self.site_type)
         export_data = self.pim_channel_api.get_export_details()
         export_details = export_data.get("data", {}).get("metaInfo", {}).get("export", {})
         group_by_parent = export_details.get('product_listing_type', False)
@@ -416,7 +421,7 @@ class ProductProcessor(object):
                     raw_products_list.append(product)
                 if include_variants and product and product.get("pimProductType","") == "PARENT" and product.get("pimUniqueId"):
                     pim_variants_fetcher = PIMChannelAPI(self.api_key, self.reference_id, group_by_parent=False,
-                                                         parent_id=product.get("pimUniqueId",""))
+                                                         parent_id=product.get("pimUniqueId",""), siteType=self.site_type)
                     for v_product, v_error in pim_variants_fetcher:
                         if isinstance(product, dict):
                             if export_with_readiness:
