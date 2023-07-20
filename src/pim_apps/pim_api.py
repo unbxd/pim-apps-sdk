@@ -16,7 +16,7 @@ from botocore.exceptions import ClientError
 class PIMChannelAPI(object):
     def __init__(
             self, api_key, reference_id=None, properties=[], group_by_parent=None, parent_id=None, q=None,
-            cache_count=20, slice_id=None, max_slice=None
+            cache_count=20, slice_id=None, max_slice=None, siteType="NETWORK"
     ):
         self.api_key = api_key
         self.properties = properties
@@ -33,6 +33,7 @@ class PIMChannelAPI(object):
         self.scroll_id = None
         self.products_total = 0
         self.is_products_split = self.is_products_post_split()
+        self.site_type = siteType
 
 
     def count(self):
@@ -145,6 +146,9 @@ class PIMChannelAPI(object):
             "groupByParent": self.group_by_parent,
             # "q": self.q
         }
+        if self.site_type == "PIM":
+            req["siteType"] = site_type
+
         if type == "SCROLL":
             req["type"] = "SCROLL"
             if scroll_id:
