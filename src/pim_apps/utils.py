@@ -8,9 +8,9 @@ import boto3
 
 os.environ['A2C_BASE_URL'] = "https://api.api2cart.com/"
 
-os.environ['PIM_APP_BASE_URL'] = "https://pim-apps.unbxd.io/pim/"
-os.environ['PIM_BASE_URL'] = "https://pim.unbxd.io/"
-os.environ['PEPPERX_URL'] = "https://pim.unbxd.io/pepperx/"
+os.environ['PIM_APP_BASE_URL'] = os.environ.get('PIM_APP_BASE_URL')  or "https://pim-apps.unbxd.io/pim/"
+os.environ['PIM_BASE_URL'] = os.environ.get('PIM_BASE_URL') or  "https://pim.unbxd.io/"
+os.environ['PEPPERX_URL'] = os.environ.get('PEPPERX_URL') or "https://pim.unbxd.io/pepperx/"
 
 os.environ['QA_PIM_APP_BASE_URL'] = "http://pimqa-apps.unbxd.io/pim/"
 os.environ['QA_PIM_BASE_URL'] = "http://pimqa.unbxd.io/"
@@ -19,6 +19,8 @@ os.environ['QA_PEPPERX_URL'] = "https://pimqa.unbxd.io/pepperx/"
 os.environ['PIMDEV_APP_BASE_URL'] = "http://pimdev-apps.unbxd.io/pim/"
 os.environ['PIMDEV_BASE_URL'] = "http://pimdev.unbxd.io/"
 os.environ['PIMDEV_PEPPERX_URL'] = "http://pimdev.unbxd.io/pepperx/"
+
+os.environ['PIM_APP_BASE_URL_INTERNAL']  = "http://pim-api-gateway.pim-prod.svc.cluster.local/pim/"
 
 EXPORT_STATUS = {"STARTED": "STARTED", "CHECK_IN_PROGRESS": "CHECK_IN_PROGRESS",
                  "EXPORT_IN_PROGRESS": "EXPORT_IN_PROGRESS", "PRODUCTS_PROCESSED": "PRODUCTS_PROCESSED",
@@ -29,9 +31,9 @@ EXPORT_STATUS = {"STARTED": "STARTED", "CHECK_IN_PROGRESS": "CHECK_IN_PROGRESS",
 
 def get_pim_app_domain():
     env = os.environ['PEPPERX_ENV']
-
+  
     if env == "PROD":
-        url = os.environ['PIM_APP_BASE_URL']
+        url = os.environ['PIM_APP_BASE_URL_INTERNAL'] or  os.environ['PIM_APP_BASE_URL']
     elif env == "QA":
         url = os.environ['QA_PIM_APP_BASE_URL']
     elif env == "PIMDEV":
@@ -337,3 +339,43 @@ class Dict2Class(object):
     def __init__(self, my_dict):
         for key in my_dict:
             setattr(self, key, my_dict[key])
+
+
+def slack_notifier(channel="#infinity-template-jobs", title="Pepper-X App Alert",
+                   header="New Pepper-X App User installed", parameters={}):
+    url = "https://hooks.slack.com/services/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"
+
+    payload = {
+        "channel": channel,
+        "username": title,
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": header
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                ]
+            }
+        ]
+    }
+
+    for key in parameters:
+        print(f"*{key} -- :*n{parameters.get(key, '-')} ")
+        payload["blocks"][1]["fields"].append({
+            "type": "mrkdwn",
+            "text": f"*{key}:*\n {parameters.get(key, '-')} "
+        })
+
+    payload = json.dumps(payload)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
